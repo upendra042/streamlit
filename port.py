@@ -14,4 +14,4 @@ with col2:
 with col3:
     with st.expander(label="knowed me more",expanded=True):
         st.error("Andhra pradesh")
-        st.image("upe.jpg")
+       
