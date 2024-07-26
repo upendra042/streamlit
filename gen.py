@@ -20,7 +20,7 @@ def generate_recipe(food, profession, dietary_preference, cuisine_type, meal_typ
 
     try:
         # Configure API key
-        genai.configure(api_key="Your API key")
+        genai.configure(api_key="AIzaSyCHqUPsZJPk1X6D4nYRlZ9wZ6dWfhwIwSk")
 
         # Create the model
         generation_config = {
