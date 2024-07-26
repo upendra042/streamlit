@@ -2,8 +2,8 @@ import streamlit as st
 from tavily import TavilyClient
 import google.generativeai as genai
 
-GEMINI_API = "AIzaSyCHqUPsZJPk1X6D4nYRlZ9wZ6dWfhwIwSk"
-TAVILY_API = "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"
+GEMINI_API = st.secrets["GEMINI"]
+TAVILY_API = st.secrets["TAVILY"]
 
 
 genai.configure(api_key=GEMINI_API)
