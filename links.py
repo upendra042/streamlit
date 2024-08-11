@@ -9,7 +9,14 @@ TAVILY_API = "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"
 genai.configure(api_key=GEMINI_API)
 tavily = TavilyClient(api_key=TAVILY_API)
 
+marquee_message = "<span style='color: green; font-size: 20px; font-weight: bold;'>Developed by upendra chøwdary VITB"
+st.markdown(f"<marquee>{marquee_message}</marquee>", unsafe_allow_html=True)
+
+
 st.title("Real Time AI")
+
+marquee_message = "Welcome to Real Time AI - Enter your query below to get started!"
+st.markdown(f"<marquee>{marquee_message}</marquee>", unsafe_allow_html=True)
 
 query = st.text_input("Enter your query")
 
