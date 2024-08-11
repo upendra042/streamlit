@@ -37,7 +37,7 @@ if st.button("Submit"):
     st.markdown(answer.text)
     
     # Debugging: Print the raw response
-    st.write(f"Raw Response: {answer.text}")
+    #st.write(f"Raw Response: {answer.text}")
     
     # Extract and display YouTube links
     youtube_links = extract_youtube_links(answer.text)
