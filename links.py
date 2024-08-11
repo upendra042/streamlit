@@ -25,7 +25,7 @@ model = genai.GenerativeModel(model_name="gemini-1.5-flash", system_instruction=
 prompt = (f"generate the present working youtube links based on the {query} given along with the some summary about {query}. ")
 
 def search(query):
-    return tavily.get_search_context(query,include_domains=["youtube.com"])
+    return tavily.get_search_context(query,include_domains=["youtube.com",, "wikipedia.org", "google.com"])
 
 def extract_youtube_links(text):
     # Regular expression to find YouTube video IDs
