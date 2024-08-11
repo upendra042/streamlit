@@ -55,21 +55,4 @@ if st.button("Submit"):
     for link in youtube_links:
         st.write(f"Extracted YouTube link: {link}")  # Debugging step
         st.video(link)
-    # Display results from Google and Wikipedia
-    st.subheader("Search Results:")
-    
-    # Display results for Google and Wikipedia
-    if 'google.com' in response:
-        st.write("Google Search Results:")
-        # Extract Google search results
-        google_results = re.findall(r'(https?://(?:www\.)?google\.com[^"]+)', response)
-        for result in google_results:
-            st.write(f"[Google Result]({result})")
-    
-    if 'wikipedia.org' in response:
-        st.write("Wikipedia Search Results:")
-        # Extract Wikipedia search results
-        wikipedia_results = re.findall(r'(https?://(?:www\.)?wikipedia\.org[^"]+)', response)
-        for result in wikipedia_results:
-            st.write(f"[Wikipedia Result]({result})")
- 
+
