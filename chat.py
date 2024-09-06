@@ -86,11 +86,6 @@ for message in st.session_state.messages:
         st.markdown(f'<div class="chat-bubble user-message">{message["text"]}</div>', unsafe_allow_html=True)
     elif message['role'] == 'ai':
         st.markdown(f'<div class="chat-bubble ai-response">{message["text"]}</div>', unsafe_allow_html=True)
-        # Display related YouTube videos
-        youtube_videos = search_youtube_videos(message["text"])
-        for video in youtube_videos:
-            st.video(video)
-st.markdown('</div>', unsafe_allow_html=True)
 
 # Input for new message
 with st.form(key='chat_form', clear_on_submit=True):
