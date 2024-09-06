@@ -1,63 +1,107 @@
 import streamlit as st
-from tavily import TavilyClient
 import google.generativeai as genai
 import re
 
 # API keys and configuration
 GEMINI_API = "AIzaSyCHqUPsZJPk1X6D4nYRlZ9wZ6dWfhwIwSk"
-TAVILY_API = "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"
-
 genai.configure(api_key=GEMINI_API)
-tavily = TavilyClient(api_key=TAVILY_API)
 
-st.write("Developed by Upendra Chowdary VITB")
-st.title("Farmer's Real-Time AI Chat")
+# Define the AI model
+model = genai.GenerativeModel(model_name="gemini-1.5-flash", 
+                              system_instruction="You are a knowledgeable farming assistant. Provide accurate and helpful responses to farming-related queries in the same language as the input.")
 
-# Display a welcome message
-marquee_message = "Welcome to the Farmer's AI Chat! Ask your farming-related questions below."
+st.title("Real-Time Farming AI Chat")
+
+# Display marquees
+marquee_message = "<span style='color: green; font-size: 20px; font-weight: bold;'>Developed by Upendra Chøwdary VITB</span>"
 st.markdown(f"<marquee>{marquee_message}</marquee>", unsafe_allow_html=True)
 
-# Input for user's query
-query = st.text_input("Enter your farming-related query")
+marquee_message = "Welcome to Real-Time Farming AI Chat - Enter your message below to chat!"
+st.markdown(f"<marquee>{marquee_message}</marquee>", unsafe_allow_html=True)
 
-# AI Model for generating farming-related content
-model = genai.GenerativeModel(
-    model_name="gemini-1.5-flash", 
-    system_instruction=(
-        "You are an AI assistant designed to help farmers. For any farming-related query, "
-        "provide practical advice, information about crops, farming techniques, market prices, and other "
-        "agriculture-related topics."
-    )
-)
+# Custom CSS for chat bubbles
+st.markdown("""
+    <style>
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            max-width: 600px;
+            margin: auto;
+            padding: 10px;
+        }
+        .chat-bubble {
+            display: inline-block;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 5px;
+            max-width: 80%;
+        }
+        .user-message {
+            background-color: #0078FF;
+            color: white;
+            align-self: flex-end;
+        }
+        .ai-response {
+            background-color: #E5E5EA;
+            color: black;
+            align-self: flex-start;
+        }
+        .chat-input {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .chat-input input {
+            width: 80%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .chat-input button {
+            width: 18%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #0078FF;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
-def search(query):
-    # Perform basic search using TavilyClient without domain filtering
-    try:
-        return tavily.get_search_context(query)
-    except Exception as e:
-        st.error(f"Error fetching data from Tavily: {e}")
-        return None
+# Chat history storage
+if 'messages' not in st.session_state:
+    st.session_state.messages = []
 
+# Function to get AI response
+def get_ai_response(user_message):
+    prompt = f"Farmer: {user_message}\nAssistant:"
+    response = model.generate_content(prompt)
+    return response.text
 
-if st.button("Submit"):
-    # Search and get response from Tavily
-    response = search(query)
-    
-    # Generate farming-related content using the AI model
-    answer = model.generate_content(response)
-    st.markdown(answer.text)
-    
-    # Display results from Google and Wikipedia
-    st.subheader("Additional Search Results:")
-    
-    if 'google.com' in response:
-        st.write("Google Search Results:")
-        google_results = re.findall(r'(https?://(?:www\.)?google\.com[^"]+)', response)
-        for result in google_results:
-            st.write(f"[Google Result]({result})")
-    
-    if 'wikipedia.org' in response:
-        st.write("Wikipedia Search Results:")
-        wikipedia_results = re.findall(r'(https?://(?:www\.)?wikipedia\.org[^"]+)', response)
-        for result in wikipedia_results:
-            st.write(f"[Wikipedia Result]({result})")
+# Display chat messages
+st.markdown('<div class="chat-container">', unsafe_allow_html=True)
+for message in st.session_state.messages:
+    if message['role'] == 'user':
+        st.markdown(f'<div class="chat-bubble user-message">{message["text"]}</div>', unsafe_allow_html=True)
+    elif message['role'] == 'ai':
+        st.markdown(f'<div class="chat-bubble ai-response">{message["text"]}</div>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
+
+# Input for new message
+with st.form(key='chat_form', clear_on_submit=True):
+    user_input = st.text_input("Type your farming-related question or message:")
+    submit_button = st.form_submit_button("Send")
+
+    if submit_button and user_input:
+        # Add user's message to chat history
+        st.session_state.messages.append({'role': 'user', 'text': user_input})
+
+        # Get AI response and add to chat history
+        ai_response = get_ai_response(user_input)
+        st.session_state.messages.append({'role': 'ai', 'text': ai_response})
+
+        # Clear the input field
+        st.experimental_rerun()
+    elif submit_button:
+        st.warning("Please enter a message before sending.")
