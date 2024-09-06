@@ -1,107 +1,90 @@
 import streamlit as st
+from tavily import TavilyClient
 import google.generativeai as genai
 import re
+import googleapiclient.discovery
 
 # API keys and configuration
 GEMINI_API = "AIzaSyCHqUPsZJPk1X6D4nYRlZ9wZ6dWfhwIwSk"
+TAVILY_API = "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"
+YOUTUBE_API_KEY = "YOUR_YOUTUBE_API_KEY"
+
 genai.configure(api_key=GEMINI_API)
+tavily = TavilyClient(api_key=TAVILY_API)
 
-# Define the AI model
-model = genai.GenerativeModel(model_name="gemini-1.5-flash", 
-                              system_instruction="You are a knowledgeable farming assistant. Provide accurate and helpful responses to farming-related queries in the same language as the input.")
-
-st.title("Real-Time Farming AI Chat")
+st.write("Developed by Upendra Chowdary VITB")
+st.title("Real-Time AI Chat")
 
 # Display marquees
-marquee_message = "<span style='color: green; font-size: 20px; font-weight: bold;'>Developed by Upendra Chøwdary VITB</span>"
+marquee_message = "Welcome to Real-Time AI - Enter your query below to get started!"
 st.markdown(f"<marquee>{marquee_message}</marquee>", unsafe_allow_html=True)
 
-marquee_message = "Welcome to Real-Time Farming AI Chat - Enter your message below to chat!"
-st.markdown(f"<marquee>{marquee_message}</marquee>", unsafe_allow_html=True)
+query = st.text_input("Enter your query")
 
-# Custom CSS for chat bubbles
-st.markdown("""
-    <style>
-        .chat-container {
-            display: flex;
-            flex-direction: column;
-            max-width: 600px;
-            margin: auto;
-            padding: 10px;
-        }
-        .chat-bubble {
-            display: inline-block;
-            padding: 10px;
-            border-radius: 10px;
-            margin: 5px;
-            max-width: 80%;
-        }
-        .user-message {
-            background-color: #0078FF;
-            color: white;
-            align-self: flex-end;
-        }
-        .ai-response {
-            background-color: #E5E5EA;
-            color: black;
-            align-self: flex-start;
-        }
-        .chat-input {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-        }
-        .chat-input input {
-            width: 80%;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-        .chat-input button {
-            width: 18%;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: #0078FF;
-            color: white;
-            font-weight: bold;
-        }
-    </style>
-""", unsafe_allow_html=True)
+# YouTube API client setup
+youtube = googleapiclient.discovery.build('youtube', 'v3', developerKey=YOUTUBE_API_KEY)
 
-# Chat history storage
-if 'messages' not in st.session_state:
-    st.session_state.messages = []
+def search_youtube(query):
+    request = youtube.search().list(
+        part="snippet",
+        q=query,
+        type="video",
+        maxResults=5
+    )
+    response = request.execute()
+    return response
 
-# Function to get AI response
-def get_ai_response(user_message):
-    prompt = f"Farmer: {user_message}\nAssistant:"
-    response = model.generate_content(prompt)
-    return response.text
+# AI Model for generating content
+model = genai.GenerativeModel(model_name="gemini-1.5-flash", system_instruction="You are a helpful assistant. For any given query, provide a brief summary of the topic and include relevant YouTube links for learning more about it. Ensure the YouTube links are educational and appropriate for the topic.")
 
-# Display chat messages
-st.markdown('<div class="chat-container">', unsafe_allow_html=True)
-for message in st.session_state.messages:
-    if message['role'] == 'user':
-        st.markdown(f'<div class="chat-bubble user-message">{message["text"]}</div>', unsafe_allow_html=True)
-    elif message['role'] == 'ai':
-        st.markdown(f'<div class="chat-bubble ai-response">{message["text"]}</div>', unsafe_allow_html=True)
-st.markdown('</div>', unsafe_allow_html=True)
+def search(query):
+    # Perform search using TavilyClient
+    return tavily.get_search_context(query, include_domains=["youtube.com", "wikipedia.org", "google.com"])
 
-# Input for new message
-with st.form(key='chat_form', clear_on_submit=True):
-    user_input = st.text_input("Type your farming-related question or message:")
-    submit_button = st.form_submit_button("Send")
+def extract_youtube_links(text):
+    # Regular expression to find YouTube video IDs
+    youtube_regex = r'(?:https?://(?:www\.)?youtube\.com/watch\?v=|https?://youtu\.be/)([\w-]+)'
+    video_ids = re.findall(youtube_regex, text)
+    youtube_links = [f"https://www.youtube.com/watch?v={video_id}" for video_id in video_ids]
+    return youtube_links
 
-    if submit_button and user_input:
-        # Add user's message to chat history
-        st.session_state.messages.append({'role': 'user', 'text': user_input})
-
-        # Get AI response and add to chat history
-        ai_response = get_ai_response(user_input)
-        st.session_state.messages.append({'role': 'ai', 'text': ai_response})
-
-        # Clear the input field
-        st.experimental_rerun()
-    elif submit_button:
-        st.warning("Please enter a message before sending.")
+if st.button("Submit"):
+    # Search and get response
+    response = search(query)
+    
+    # Generate content using AI
+    answer = model.generate_content(response)
+    st.markdown(answer.text)
+    
+    # Extract and display YouTube links from AI response
+    youtube_links = extract_youtube_links(answer.text)
+    
+    if youtube_links:
+        st.subheader("YouTube Links:")
+        for link in youtube_links:
+            st.write(f"Extracted YouTube link: {link}")  # Debugging step
+            st.video(link)
+    else:
+        # Perform YouTube search if no links are found
+        st.warning("No YouTube links found in the response. Searching YouTube...")
+        youtube_response = search_youtube(query)
+        for item in youtube_response['items']:
+            video_title = item['snippet']['title']
+            video_url = f"https://www.youtube.com/watch?v={item['id']['videoId']}"
+            st.write(f"{video_title}: {video_url}")
+            st.video(video_url)
+    
+    # Display results from Google and Wikipedia
+    st.subheader("Search Results:")
+    
+    if 'google.com' in response:
+        st.write("Google Search Results:")
+        google_results = re.findall(r'(https?://(?:www\.)?google\.com[^"]+)', response)
+        for result in google_results:
+            st.write(f"[Google Result]({result})")
+    
+    if 'wikipedia.org' in response:
+        st.write("Wikipedia Search Results:")
+        wikipedia_results = re.findall(r'(https?://(?:www\.)?wikipedia\.org[^"]+)', response)
+        for result in wikipedia_results:
+            st.write(f"[Wikipedia Result]({result})")
