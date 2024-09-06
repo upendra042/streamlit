@@ -79,6 +79,13 @@ def get_ai_response(user_message):
     response = model.generate_content(prompt)
     return response.text
 
+# Function to search for related YouTube videos
+def search_youtube_videos(user_message):
+    youtube_search_query = user_message + " farming"
+    # You need to implement the YouTube search functionality here
+    # For now, I'm just returning a dummy response
+    return ["https://www.youtube.com/watch?v=dQw4w9WgXcQ"]
+
 # Display chat messages
 st.markdown('<div class="chat-container">', unsafe_allow_html=True)
 for message in st.session_state.messages:
@@ -86,6 +93,10 @@ for message in st.session_state.messages:
         st.markdown(f'<div class="chat-bubble user-message">{message["text"]}</div>', unsafe_allow_html=True)
     elif message['role'] == 'ai':
         st.markdown(f'<div class="chat-bubble ai-response">{message["text"]}</div>', unsafe_allow_html=True)
+        # Display related YouTube videos
+        youtube_videos = search_youtube_videos(message["text"])
+        for video in youtube_videos:
+            st.video(video)
 st.markdown('</div>', unsafe_allow_html=True)
 
 # Input for new message
@@ -102,6 +113,6 @@ with st.form(key='chat_form', clear_on_submit=True):
         st.session_state.messages.append({'role': 'ai', 'text': ai_response})
 
         # Clear the input field
-        st.experimental_rerun()
+        st.write("")
     elif submit_button:
         st.warning("Please enter a message before sending.")
