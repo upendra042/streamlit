@@ -31,8 +31,13 @@ model = genai.GenerativeModel(
 )
 
 def search(query):
-    # Perform search using TavilyClient, focusing on farming-related domains if needed
-    return tavily.get_search_context(query, include_domains=["wikipedia.org", "google.com"])
+    # Perform basic search using TavilyClient without domain filtering
+    try:
+        return tavily.get_search_context(query)
+    except Exception as e:
+        st.error(f"Error fetching data from Tavily: {e}")
+        return None
+
 
 if st.button("Submit"):
     # Search and get response from Tavily
