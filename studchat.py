@@ -7,18 +7,18 @@ GEMINI_API = "AIzaSyCHqUPsZJPk1X6D4nYRlZ9wZ6dWfhwIwSk"
 genai.configure(api_key=GEMINI_API)
 
 # Display marquees
-marquee_message = "<span style='color: green; font-size: 20px; font-weight: bold;'>Developed by Upendra Chøwdary VITB</span>"
-st.markdown(f"<marquee>{marquee_message}</marquee>", unsafe_allow_html=True)
+#marquee_message = "<span style='color: green; font-size: 20px; font-weight: bold;'>Developed by Upendra Chøwdary VITB</span>"
+#st.markdown(f"<marquee>{marquee_message}</marquee>", unsafe_allow_html=True)
 
 # Define the AI model
 model = genai.GenerativeModel(model_name="gemini-1.5-flash", 
                               system_instruction="You are a knowledgeable student assistant. Provide accurate and helpful responses to student-related queries in the same language as the input.")
 
-st.title("Real-Time Student Chat")
+st.title("Chat Assistant")
 
 # Display marquees
-marquee_message = "<span style='color: green; font-size: 20px; font-weight: bold;'>Welcome to Real-Time Student Chat - Enter your message below to chat!</span>"
-st.markdown(f"<marquee>{marquee_message}</marquee>", unsafe_allow_html=True)
+#marquee_message = "<span style='color: green; font-size: 20px; font-weight: bold;'>Welcome to Real-Time Student Chat - Enter your message below to chat!</span>"
+#st.markdown(f"<marquee>{marquee_message}</marquee>", unsafe_allow_html=True)
 
 # Custom CSS for chat bubbles
 st.markdown("""
