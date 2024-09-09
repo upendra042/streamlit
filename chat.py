@@ -16,7 +16,7 @@ st.title("Real-Time Farming AI Chat")
 #marquee_message = "<span style='color: green; font-size: 20px; font-weight: bold;'>Developed by Upendra Chøwdary VITB</span>"
 #st.markdown(f"<marquee>{marquee_message}</marquee>", unsafe_allow_html=True)
 
-marquee_message = "Welcome to Real-Time Farming AI Chat - Enter your message below to chat!"
+marquee_message = "<span style='color: green; font-size: 20px; font-weight: bold;'>Welcome to Real-Time Farming AI Chat - Enter your message below to chat!</span>"
 st.markdown(f"<marquee>{marquee_message}</marquee>", unsafe_allow_html=True)
 
 # Custom CSS for chat bubbles
