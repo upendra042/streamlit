@@ -13,8 +13,8 @@ model = genai.GenerativeModel(model_name="gemini-1.5-flash",
 st.title("Real-Time Farming AI Chat")
 
 # Display marquees
-marquee_message = "<span style='color: green; font-size: 20px; font-weight: bold;'>Developed by Upendra Chøwdary VITB</span>"
-st.markdown(f"<marquee>{marquee_message}</marquee>", unsafe_allow_html=True)
+#marquee_message = "<span style='color: green; font-size: 20px; font-weight: bold;'>Developed by Upendra Chøwdary VITB</span>"
+#st.markdown(f"<marquee>{marquee_message}</marquee>", unsafe_allow_html=True)
 
 marquee_message = "Welcome to Real-Time Farming AI Chat - Enter your message below to chat!"
 st.markdown(f"<marquee>{marquee_message}</marquee>", unsafe_allow_html=True)
