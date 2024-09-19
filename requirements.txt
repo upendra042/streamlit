@@ -4,3 +4,4 @@ streamlit
 Pillow
 easyocr
 opencv-python
+pytesseract
