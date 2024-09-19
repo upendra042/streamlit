@@ -1,2 +1,6 @@
-google.generativeai
+google-generativeai
 tavily-python
+streamlit
+Pillow
+easyocr
+opencv-python
