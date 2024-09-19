@@ -5,3 +5,4 @@ Pillow
 easyocr
 opencv-python
 pytesseract
+cv2
