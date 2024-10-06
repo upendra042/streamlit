@@ -3,7 +3,7 @@ import google.generativeai as genai
 import re
 
 # API keys and configuration
-GEMINI_API = "AIzaSyCHqUPsZJPk1X6D4nYRlZ9wZ6dWfhwIwSk"
+GEMINI_API = "AIzaSyC8AYXXRtiuoiJxe_mzBlT8q1q-QU5Ke0w"
 genai.configure(api_key=GEMINI_API)
 
 # Define the AI model
