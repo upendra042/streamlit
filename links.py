@@ -3,7 +3,7 @@ from tavily import TavilyClient
 import google.generativeai as genai
 import re
 
-GEMINI_API = "AIzaSyC8AYXXRtiuoiJxe_mzBlT8q1q-QU5Ke0w"
+GEMINI_API = "AIzaSyBuaKP0XoYSfqrtpipRe4qiMCUa6lM56Nc"
 TAVILY_API = "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"
 
 genai.configure(api_key=GEMINI_API)
