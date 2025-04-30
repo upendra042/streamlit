@@ -18,6 +18,10 @@ model = genai.GenerativeModel(
     system_instruction="You are an expert coder. Help me to learn coding."
 )
 
+marquee_message = "<span style='color: green; font-size: 20px; font-weight: bold;'>Developed by upendra chøwdary VITB"
+st.markdown(f"<marquee>{marquee_message}</marquee>", unsafe_allow_html=True)
+
+
 # Streamlit UI
 st.title("AI Code Generator")
 
